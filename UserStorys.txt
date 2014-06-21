@@ -1,2 +1,10 @@
 Team(Georgi Iliev & Georgi Kabadzhov)
 User Storys:
+1. Generating BitWise questions
+2. Generating PDF doc with the questions
+3. Generating HTML table with the questions
+4. Calculating the BitWise operations
+5. Generating PDF doc with the answers
+6. Generating HTML table with the answers
+7. Choosing difficulty level
+8. Choosing how many tests with 12 answers to be generated
