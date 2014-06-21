@@ -5,10 +5,10 @@ include HTML
 
 
 
+callin = String.new
 
 
 #shiftsNum
-callin = String.new
 tasksNum=ARGV[0].to_i
 
 
@@ -31,6 +31,7 @@ end
 
 def generateHTMLtable tasksNum
 i = 0
+c = 0
 
 table = Table.new
 table.border = 1
@@ -39,17 +40,26 @@ table.cellpadding = 5
 caption = Table::Caption.new
 caption.content = "This is a caption!"
 
-for i in i..tasksNum do    
+
+
 row = Table::Row.new
 row.bgcolor = "white"
-end
 
-d1 = Table::Row::Data.new{ |d| d.content = callin }
+tasksNum.times {
+	taskss=generateTask
+
+	d1 = Table::Row::Data.new{ |d| d.content = '
+		int a=#{taskss[0]}
+		int b=#{taskss[1]}
+		int res=a#{taskss[2]}(b#{taskss[3]}#{taskss[4]})
+		res=??' }
+	row[0..tasksNum] = d1
+
+}
 
 
-row[0..tasksNum] = d1
 
-
+	
 h1 = Table::Row::Header.new
 h1.content = "This is a header"
 h1.colspan = 2
@@ -93,12 +103,12 @@ def generateTestAndAnswers tasksNum
 					}
 				"
 
-			
 
 			end	
 
 			`gcc demo.c -o demo`
 		
+
 
 
 		 }
@@ -107,5 +117,5 @@ def generateTestAndAnswers tasksNum
 end
 
 generateTestAndAnswers tasksNum
-#generateHTMLtable tasksNum
+generateHTMLtable tasksNum
 
