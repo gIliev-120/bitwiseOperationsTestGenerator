@@ -12,21 +12,35 @@ callin = String.new
 tasksNum=ARGV[0].to_i
 
 
-
 def generateTask
+
+difficulty=ARGV[1].to_s
 			hexIntro="0x"
-			firstNum=hexIntro+Random.new.rand(1..1024).to_s(16)
-			secondNum=hexIntro+Random.new.rand(1..1024).to_s(16)
+#			firstNum=hexIntro+Random.new.rand(1..12000).to_s(16)
+#			secondNum=hexIntro+Random.new.rand(1..12000).to_s(16)
 			operators=['|','^','&']
 			opIndex=Random.new.rand(0..2)
 			shifts=['<<','>>']
 			shIndex=Random.new.rand(0..1)
-			numOfShifts=Random.new.rand(1..16)
+#			numOfShifts=Random.new.rand(1..32)
 
-			return firstNum,secondNum,operators[opIndex],shifts[shIndex],numOfShifts
+
+
+			unless difficulty == "Hard" 
+				firstNum=hexIntro+Random.new.rand(1..2048).to_s(16)
+				secondNum=hexIntro+Random.new.rand(1..2048).to_s(16)
+				x = Random.new.rand(0..5)
+				numOfShifts = 2 ** x
+			else 
+				firstNum=hexIntro+Random.new.rand(1..12000).to_s(16)
+				secondNum=hexIntro+Random.new.rand(1..12000).to_s(16)
+
+				numOfShifts=Random.new.rand(1..16)
+			end	
+
+
+	return firstNum,secondNum,operators[opIndex],shifts[shIndex],numOfShifts
 		
-		
-	
 end
 
 def generateHTMLtable tasksNum
@@ -42,22 +56,14 @@ caption.content = "This is a caption!"
 
 
 
-row = Table::Row.new
-row.bgcolor = "white"
 
-tasksNum.times {
-	taskss=generateTask
+for i in i..tasksNum do 
+	row = Table::Row.new
+	row.bgcolor = "white"	
+end
 
-	d1 = Table::Row::Data.new{ |d| d.content = '
-		int a=#{taskss[0]}
-		int b=#{taskss[1]}
-		int res=a#{taskss[2]}(b#{taskss[3]}#{taskss[4]})
-		res=??' }
-	row[0..tasksNum] = d1
-
-}
-
-
+d1 = Table::Row::Data.new{ |d| d.content = 'Edit after minute' }
+row[0..tasksNum] = d1
 
 	
 h1 = Table::Row::Header.new
