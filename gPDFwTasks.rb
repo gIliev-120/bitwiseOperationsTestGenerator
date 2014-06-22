@@ -1,18 +1,3 @@
-require "prawn"
-
-
-
-
-
-
-
-
-#shiftsNum
-
-tasksNum=ARGV[0].to_i
-
-
-
 def generateTask
 			hexIntro="0x"
 			firstNum=hexIntro+Random.new.rand(1..1024).to_s(16)
@@ -29,47 +14,43 @@ def generateTask
 	
 end
 
+def genHtml
+	taskss=generateTask
+	returnedHtml="<tr><td>"
+	returnedHtml<<"<p>int a=#{taskss[0]}</p>"
+	returnedHtml<<"<p>int b=#{taskss[1]}</p>"
+	returnedHtml<<"<p>int res=a#{taskss[2]}(b#{taskss[3]}#{taskss[4]})</p>"
+	returnedHtml<<"<p>res=??</p>"
+	returnedHtml<<"</td></tr>"
 
-
-
-def generateTestAndAnswers tasksNum
-
-	Prawn::Document.generate "example.pdf" do |pdf|
-
-	tasksNum.times {
-		taskss=generateTask
-			pdf.text"
-			int a=#{taskss[0]}
-			int b=#{taskss[1]}
-			int res=a#{taskss[2]}(b#{taskss[3]}#{taskss[4]})
-			res=??
-
-					"
-
-			File.open("demo.c", "w") do |file|  
-				file<<"
-					#include<stdio.h>
-					int main(){
-					int a=#{taskss[0]};
-					int b=#{taskss[1]};
-					int res=a#{taskss[2]}(b#{taskss[3]} #{taskss[4]});
-					printf(\"%d\",a);
-			
-					return 0;
-
-					}
-				"
-
-			end	
-
-			`gcc demo.c -o demo`
-			
-
-		 }
-    end
-	
+	return returnedHtml
 end
 
-generateTestAndAnswers tasksNum
+def genWholeHtml 
+	htmlIntro="<!DOCTYPE html>
+		<html>
+		<head>
+		<style>
+		</style>
+		<head>
+		<body>
+		<table border=\"1\" style=\"width:200px\">"
+	endHtml="</table>
+		</body>
+		</html>"
+	File.open("Test1.html", "w") do |file|  
+		
+		file<<"#{htmlIntro}"
+	12.times{
+		k=genHtml
+		file<<"#{k}"
+	}
+		file<<"#{endHtml}"
+	end
+
+end
+
+genWholeHtml
+
 
 
