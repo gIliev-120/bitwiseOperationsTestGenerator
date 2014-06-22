@@ -7,4 +7,4 @@ User Storys:
 5. Generating PDF doc with the answers (G.K)
 6. Generating HTML table with the answers (G.K)
 7. Choosing difficulty level (G.K)
-8. Choosing how many tests with 12 answers to be generated (G.K)
+8. Choosing how many tests with 12 answers to be generated (G.I)
