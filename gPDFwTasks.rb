@@ -1,3 +1,6 @@
+require 'prawn'
+pdf = Prawn::Document.new
+
 def generateTask
 			hexIntro="0x"
 			firstNum=hexIntro+Random.new.rand(1..1024).to_s(16)
@@ -14,7 +17,7 @@ def generateTask
 	
 end
 
-def genHtml
+def addHexstoHtmlAndPdf pdf
 	taskss=generateTask
 	returnedHtml="<tr><td>"
 	returnedHtml<<"<p>int a=#{taskss[0]}</p>"
@@ -23,10 +26,21 @@ def genHtml
 	returnedHtml<<"<p>res=??</p>"
 	returnedHtml<<"</td></tr>"
 
-	return returnedHtml
-end
 
-def genWholeHtml 
+
+	pdf.text"
+			int a=#{taskss[0]}
+			int b=#{taskss[1]}
+			int res=a#{taskss[2]}(b#{taskss[3]}#{taskss[4]})
+			res=??
+		"
+
+	return returnedHtml
+end	
+
+
+
+def genWholeHtml pdf
 	htmlIntro="<!DOCTYPE html>
 		<html>
 		<head>
@@ -42,7 +56,7 @@ def genWholeHtml
 		
 		file<<"#{htmlIntro}"
 	12.times{
-		k=genHtml
+		k=addHexstoHtmlAndPdf(pdf)
 		file<<"#{k}"
 	}
 		file<<"#{endHtml}"
@@ -50,7 +64,10 @@ def genWholeHtml
 
 end
 
-genWholeHtml
+
+genWholeHtml pdf
+
+pdf.render_file "Test1.pdf"
 
 
 
