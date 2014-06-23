@@ -47,6 +47,16 @@ pdf[testNumber].text"
 		"
 end
 
+def genWholeHTML htmlIntro,endHtml,miniHtmls,testNumber
+	
+	File.open("Test#{testNumber}.html", "w") do |file|  
+	file<<"#{htmlIntro}"
+	file<<"#{miniHtmls}"
+	file<<"#{endHtml}"
+	end 	
+
+end
+
 
 numOfTest=ARGV[0].to_i
 pdf=Array.new(numOfTest)
@@ -60,7 +70,7 @@ for taskNumber in 1..12
 	addHexstoPDF(pdf,testNumber,taskss[taskNumber])	
 	miniHtmls[taskNumber]=addHexstoHtml(taskss[taskNumber])
 	#p miniHtmls
-	
+	genWholeHTML(htmlIntro,endHtml,miniHtmls,testNumber)			
 end
 
 pdf[testNumber].render_file "Test#{testNumber}.pdf"
