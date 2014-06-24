@@ -61,15 +61,17 @@ end
 numOfTest=ARGV[0].to_i
 pdf=Array.new(numOfTest)
 taskss=Array.new(12)
-miniHtmls=Array.new(12)
+
 
 for testNumber in 1..numOfTest
 pdf[testNumber] = Prawn::Document.new
+miniHtmls=""
 for taskNumber in 1..12
+
 	taskss[taskNumber]=generateTask
 	addHexstoPDF(pdf,testNumber,taskss[taskNumber])	
-	miniHtmls[taskNumber]=addHexstoHtml(taskss[taskNumber])
-	#p miniHtmls
+	miniHtmls<<addHexstoHtml(taskss[taskNumber])
+	
 	genWholeHTML(htmlIntro,endHtml,miniHtmls,testNumber)			
 end
 
