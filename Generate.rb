@@ -13,50 +13,37 @@ endHtml="</table>
 </html>"
 
 def generateTask
+			hexIntro="0x"
+			firstNum=hexIntro+Random.new.rand(1..1024).to_s(16)
+			secondNum=hexIntro+Random.new.rand(1..1024).to_s(16)
+			operators=['|','^','&']
+			opIndex=Random.new.rand(0..2)
+			shifts=['<<','>>']
+			shIndex=Random.new.rand(0..1)
+			numOfShifts=Random.new.rand(1..16)
 
-	difficulty=ARGV[1].to_s
-	hexIntro="0x"
-#			firstNum=hexIntro+Random.new.rand(1..12000).to_s(16)
-#			secondNum=hexIntro+Random.new.rand(1..12000).to_s(16)
-operators=['|','^','&']
-opIndex=Random.new.rand(0..2)
-shifts=['<<','>>']
-shIndex=Random.new.rand(0..1)
-#			numOfShifts=Random.new.rand(1..32)
-
-unless difficulty == "Hard" 
-	firstNum=hexIntro+Random.new.rand(1..2048).to_s(16)
-	secondNum=hexIntro+Random.new.rand(1..2048).to_s(16)
-	x = Random.new.rand(0..5)
-	numOfShifts = 2 ** x
-else 
-	firstNum=hexIntro+Random.new.rand(1..12000).to_s(16)
-	secondNum=hexIntro+Random.new.rand(1..12000).to_s(16)
-	numOfShifts=Random.new.rand(1..16)
-end	
-return firstNum,secondNum,operators[opIndex],shifts[shIndex],numOfShifts
-
+			return firstNum,secondNum,operators[opIndex],shifts[shIndex],numOfShifts
 end
-def calculateBitWise 
-	tasks = generateTask
-	File.open("demo.c", "w") do |file|  
-		file<<"
-		#include<stdio.h>
 
-		int main(){
-			int a=#{tasks[0]};
-			int b=#{tasks[1]};
-			unsigned int res=a#{tasks[2]}(b#{tasks[3]} #{tasks[4]});
-			printf(\"0x\");
-			printf(\"%x\",res);
+def calculateBitWise taskss
+File.open("answers.c", "w") do |file|
+file<<"
+#include<stdio.h>
 
-			return 0;
+int main(){
+int a=#{taskss[0]};
+int b=#{taskss[1]};
+unsigned int res=a#{taskss[2]}(b#{taskss[3]} #{taskss[4]});
+printf(\"0x\");
+printf(\"%x\",res);
 
-		}
-		"
-	end	
-	p res = `gcc demo.c && ./a.out `
-	
+return 0;
+
+}
+"
+end	
+res = `gcc answers.c && ./a.out`
+
 end
 
 
@@ -85,14 +72,44 @@ def addAnswerstoPDF(pdfWithAnswers,testNumber,taskss,ans)
 
 end
 
-def genWholeHTML htmlIntro,endHtml,miniHtmls,testNumber
+def genWholeHTML htmlIntro,endHtml,miniHtmls,testNumber 
 	
 	File.open("Test#{testNumber}.html", "w") do |file|  
-		file<<"#{htmlIntro}"
-		file<<"#{miniHtmls}"
-		file<<"#{endHtml}"
+	file<<"#{htmlIntro}"
+	file<<"#{miniHtmls}"
+	file<<"#{endHtml}"
 	end 	
 
+end
+
+def addAnsToHtml taskss,ans
+	
+	returnedAnswers="<tr><td>"
+	returnedAnswers<<"<p>int a=#{taskss[0]}</p>"
+	returnedAnswers<<"<p>int b=#{taskss[1]}</p>"
+	returnedAnswers<<"<p>int res=a#{taskss[2]}(b#{taskss[3]}#{taskss[4]})</p>"
+	returnedAnswers<<"<p>res=??</p>"
+	returnedAnswers<<"<p>Answer->res=#{ans}</p>"
+	returnedAnswers<<"</td></tr>"
+
+	return returnedAnswers
+end
+
+def addHexstoPDF(pdf,testNumber,taskss)
+pdf[testNumber].text"
+			int a=#{taskss[0]}
+			int b=#{taskss[1]}
+			int res=a#{taskss[2]}(b#{taskss[3]}#{taskss[4]})
+			res=??
+		"
+end
+
+def genWholeHTMLwithAnswers htmlIntro,endHtml,miniHtmlsWithAnswers,testNumber
+	File.open("Answers_Test#{testNumber}.html", "w") do |file|  
+	file<<"#{htmlIntro}"
+	file<<"#{miniHtmlsWithAnswers}"
+	file<<"#{endHtml}"
+end
 end
 
 
@@ -115,6 +132,8 @@ for taskNumber in 1..12
         genWholeHTML(htmlIntro,endHtml,miniHtmls,testNumber)                   
         ans = calculateBitWise(taskss[taskNumber])
         addAnswerstoPDF(pdfWithAnswers,testNumber,taskss[taskNumber],ans)
+        miniHtmlsWithAnswers<<addAnsToHtml(taskss[taskNumber],ans)
+		genWholeHTMLwithAnswers(htmlIntro,endHtml,miniHtmlsWithAnswers,testNumber)
  
 end
 pdfWithAnswers[testNumber].render_file "Answers_Test#{testNumber}.pdf"
